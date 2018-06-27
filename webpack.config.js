@@ -127,7 +127,7 @@ function getBaseConfig() {
 
 const webConfig = getBaseConfig();
 webConfig.entry = {
-  entry: [pathTo.resolve('./src/entry.js'), pathTo.resolve('./src/render.js')]
+  entry: [pathTo.resolve('./src/entry.js')]
 };
 webConfig.output = {
   path: pathTo.join(__dirname, 'dist/web'),
