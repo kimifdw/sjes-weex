@@ -2,12 +2,39 @@ const pathTo = require('path');
 const fs = require('fs-extra');
 const webpack = require('webpack');
 const cssnext = require('postcss-cssnext');
+const glob = require('glob');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const entry = {};
-const weexEntry = {};
-// const vueWebTemp = 'temp';
 const hasPluginInstalled = fs.existsSync('./web/plugin.js');
 var isWin = /^win/.test(process.platform);
+
+
+// 多页面配置
+const webEntries = {};
+const chunks = [];
+const htmlWebpackPluginArray = [];
+glob.sync('./src/views/**/app.js').forEach(path => {
+  const chunk = path.split('./src/views/')[1].split('/app.js')[0];
+  webEntries[chunk] = path;
+  chunks.push(chunk);
+
+  const filename = chunk + '.html';
+  const htmlConf = {
+    filename: filename,
+    template: path.replace(/.js/g, '.html'),
+    inject: 'body',
+    hash: true,
+    isDevServer: true,
+    chunksSortMode: 'dependency',
+    chunks: ['commons', chunk]
+  }
+  htmlWebpackPluginArray.push(new HtmlWebpackPlugin(htmlConf));
+});
+
+console.log(htmlWebpackPluginArray);
+
+console.log(webEntries);
 
 
 function getEntryFileContent(entryPath, vueFilePath) {
@@ -79,12 +106,12 @@ const plugins = [
       //   }
       // })]
     }
-  })
+  }, ...htmlWebpackPluginArray)
 ];
 
 function getBaseConfig() {
   return {
-    entry: entry,
+    entry: webEntries,
     output: {
       path: 'dist'
     },
@@ -126,16 +153,16 @@ function getBaseConfig() {
 
 
 const webConfig = getBaseConfig();
-webConfig.entry = {
-  entry: [pathTo.resolve('./src/entry.js')]
-};
+// webConfig.entry = {
+//   entry: [pathTo.resolve('./src/entry.js')]
+// };
 webConfig.output = {
-  path: pathTo.join(__dirname, 'dist/web'),
-  filename: '[name].js'
+  path: pathTo.join(__dirname, '../dist/web'),
+  // filename: '[name].js'
+  filename: 'asserts/js/[name].js',
+  publicPath: '/'
 };
 // webConfig.module.rules[1].loaders.push('vue-loader');
-
-
 
 // const webConfig = {
 //   context: pathTo.join(__dirname, ''),

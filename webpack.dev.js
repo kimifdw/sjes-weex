@@ -50,13 +50,13 @@ module.exports = function() {
            *
            * See: https://github.com/ampedandwired/html-webpack-plugin
            */
-          new HtmlWebpackPlugin({
-              template: 'web/index.dev.html',
-              title: 'Hello Weex',
-              isDevServer: true,
-              chunksSortMode: 'dependency',
-              inject: 'head'
-          }),
+          // new HtmlWebpackPlugin({
+          //     template: 'web/index.dev.html',
+          //     title: 'Hello Weex',
+          //     isDevServer: true,
+          //     chunksSortMode: 'dependency',
+          //     inject: 'head'
+          // }),
           /*
              * Plugin: ScriptExtHtmlWebpackPlugin
              * Description: Enhances html-webpack-plugin functionality
@@ -86,7 +86,9 @@ module.exports = function() {
         watchOptions: {
           aggregateTimeout: 300,
           poll: 1000
-        }
+        },
+        open: true,
+        openPage: 'user/login.html'
       }
   });
 }
